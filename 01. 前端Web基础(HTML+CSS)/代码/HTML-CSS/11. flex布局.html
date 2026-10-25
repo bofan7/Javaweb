@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>flex弹性布局</title>
+
+  <!--
+Flexbox 布局属性参考表
+
+属性: display
+取值: flex
+含义: 使用flex布局
+
+
+
+属性: flex-direction (设置主轴)
+取值: row
+含义: 主轴方向为x轴，水平向右。（默认）
+取值: column
+含义: 主轴方向为y轴，垂直向下。
+
+
+
+属性: justify-content (子元素在主轴上的对齐方式)
+取值: flex-start
+含义: 从头开始排列
+取值: flex-end
+含义: 从尾部开始排列
+取值: center
+含义: 在主轴居中对齐
+取值: space-around
+含义: 平分剩余空间
+取值: space-between
+含义: 先两边贴边，再平分剩余空间
+-->
+  <style>
+    /* body {
+      margin: 0;
+    } */
+    #container {
+      background-color: #f1eeee;
+      width: 500px;
+      height: 300px;
+
+      display: flex; /* flex弹性布局 */
+      flex-direction: row; /* 默认为row水平布局, 设置主轴 */
+      justify-content: space-between; /*左右对齐*/
+    }
+    .item {
+      background-color: rgb(184, 246, 184);
+      border: 1px solid rgb(141, 138, 138);
+      width: 100px;
+      height: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div class="item">1</div>
+    <div class="item">2</div>
+    <div class="item">3</div>
+  </div>
+</body>
+</html>

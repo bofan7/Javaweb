@@ -1,0 +1,13 @@
+services:
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      MYSQL_DATABASE: tilas
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./runtime/mysql/init:/docker-entrypoint-initdb.d:ro
+volumes:
+  mysql-data:

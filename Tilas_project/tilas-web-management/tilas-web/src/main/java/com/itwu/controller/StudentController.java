@@ -1,0 +1,86 @@
+package com.itwu.controller;
+
+import com.itwu.pojo.PageResult;
+import com.itwu.pojo.Result;
+import com.itwu.pojo.Student;
+import com.itwu.service.StudentService;
+import com.itwu.anno.Log;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * 学员管理Controller
+ */
+@Slf4j
+@RestController
+@RequestMapping("/students")
+public class StudentController {
+
+    @Autowired
+    private StudentService studentService;
+
+    /**
+     * 添加学生
+     */
+    @Log
+    @PostMapping
+    public Result save(@RequestBody Student student) {
+        studentService.save(student);
+        return Result.success();
+    }
+
+    /**
+     * 条件分页查询
+     */
+    @GetMapping
+    public Result page(String name,
+            Integer degree,
+            Integer clazzId,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageResult pageResult = studentService.page(name, degree, clazzId, page, pageSize);
+        return Result.success(pageResult);
+    }
+
+    /**
+     * 根据ID查询学生信息
+     */
+    @GetMapping("/{id}")
+    public Result getInfo(@PathVariable Integer id) {
+        Student student = studentService.getInfo(id);
+        return Result.success(student);
+    }
+
+    /**
+     * 修改学生信息
+     */
+    @Log
+    @PutMapping
+    public Result update(@RequestBody Student student) {
+        studentService.update(student);
+        return Result.success();
+    }
+
+    /**
+     * 删除学生信息
+     */
+    @Log
+    @DeleteMapping("/{ids}")
+    public Result delete(@PathVariable List<Integer> ids) {
+        studentService.delete(ids);
+        return Result.success();
+    }
+
+    /**
+     * 违纪处理
+     */
+    @Log
+    @PutMapping("/violation/{id}/{score}")
+    public Result violationHandle(@PathVariable Integer id, @PathVariable Integer score) {
+        studentService.violationHandle(id, score);
+        return Result.success();
+    }
+}

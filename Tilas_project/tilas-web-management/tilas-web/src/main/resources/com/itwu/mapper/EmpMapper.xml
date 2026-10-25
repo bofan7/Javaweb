@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+    namespace 需要绑定到你对应的 Dao/Mapper 接口的全限定名
+    例如：com.example.dao.EmpMapper
+-->
+
+<!--
+    mapper.xml 必须放在 src/main/resources/com.itwu.mapper 目录下
+    这样才能程序才能把 mapper.xml 文件识别到mapper.java
+-->
+<mapper namespace="com.itwu.mapper.EmpMapper">
+
+    <!-- 在这里写 SQL -->
+
+
+    <!--使用了动态sql-->
+    <select id="list" resultType="com.itwu.pojo.Emp">
+        select e.*, d.name deptName from emp e left join dept d on e.dept_id = d.id
+        <where>
+            <if test=" name != null and name != '' ">
+                e.name like concat('%', #{name}, '%')
+            </if>
+
+            <if test="gender != null">
+                and e.gender = #{gender}
+            </if>
+
+            <if test="begin != null and end != null">
+                and e.entry_date between #{begin} and #{end}
+            </if>
+        </where>
+        order by e.update_time desc
+    </select>
+
+    <!--
+    批量删除员工
+    -->
+    <delete id="delete">
+        delete from emp where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--
+    ResultMap: 用于处理多表查询：手动映射 Emp 和 EmpExpr 的关系
+    1. 解决列名冲突 (emp.id vs emp_expr.id)
+    2. 映射一对多关系 (collection)
+    -->
+    <resultMap id="empResultMap" type="com.itwu.pojo.Emp">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="name" column="name"/>
+        <result property="gender" column="gender"/>
+        <result property="phone" column="phone"/>
+        <result property="job" column="job"/>
+        <result property="salary" column="salary"/>
+        <result property="image" column="image"/>
+        <result property="entryDate" column="entry_date"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deptName" column="deptName"/>
+        
+        <!-- 以下用于封装exprlist
+            property: Emp 类中的属性名 (List<EmpExpr> exprlist)
+            ofType: list 中元素的类型 (EmpExpr)
+            当前 Java 实体类里包含 List<其他类> 成员变量时使用collection
+        -->
+        <collection property="exprList" ofType="com.itwu.pojo.EmpExpr">
+            <id property="id" column="expr_id"/>
+            <result property="empId" column="expr_emp_id"/>
+            <result property="begin" column="expr_begin"/>
+            <result property="end" column="expr_end"/>
+            <result property="company" column="expr_company"/>
+            <result property="job" column="expr_job"/>
+        </collection>
+    </resultMap>
+
+    <!--
+    查询员工详情（包含工作经历）
+    使用 left join 连接 emp_expr 表
+    要为 emp_expr 的列起别名，避免与 emp 的列名冲突(id, job等)
+    -->
+    <select id="getById" resultMap="empResultMap">
+        select
+            e.id, e.username, e.password, e.name, e.gender, e.phone, e.job, e.salary, e.image, e.entry_date, e.dept_id, e.create_time, e.update_time,
+            ee.id as expr_id, ee.emp_id as expr_emp_id, ee.begin as expr_begin, ee.end as expr_end, ee.company as expr_company, ee.job as expr_job
+        from emp e
+        left join emp_expr ee on e.id = ee.emp_id
+        where e.id = #{id}
+    </select>
+
+    <update id="updateById">
+        update emp
+        <set>
+            <if test="username != null and username != ''">username = #{username},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="job != null">job = #{job},</if>
+            <if test="salary != null">salary = #{salary},</if>
+            <if test="image != null and image != ''">image = #{image},</if>
+            <if test="entryDate != null">entry_date = #{entryDate},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!-- 统计员工职位人数 -->
+    <select id="countEmpJobData" resultType="java.util.Map">
+        select
+            (case job
+                 when 1 then 'Class Teacher'
+                 when 2 then 'Lecturer'
+                 when 3 then 'Student Manager'
+                 when 4 then 'Research Manager'
+                 when 5 then 'Consultant'
+                 else 'Other'
+                end) pos,
+            count(*) num
+        from emp group by job order by num
+    </select>
+
+    <!-- 统计员工性别人数 -->
+    <select id="countEmpGenderData" resultType="java.util.Map">
+        select
+        (case gender
+        when 1 then 'male worker'
+        when 2 then 'female'
+        else 'other'
+        end) name,
+        count(*) value
+        from emp group by gender
+    </select>
+</mapper>

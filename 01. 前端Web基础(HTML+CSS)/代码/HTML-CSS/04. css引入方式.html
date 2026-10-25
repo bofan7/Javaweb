@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我是浏览页的标签</title>
+
+  <!-- CSS引入方式：
+行内样式：写在标签的style属性中（配合JavaScript使用）
+内部样式：写在style标签中（可以写在页面任何位置，但通常约定写在head标签中）
+外部样式：写在一个单独的.css文件中（需要通过link标签在网页中引入） -->
+
+  <!-- 方式二: 内部样式 -->
+  <style>
+    .classname1{ /*.classname1是一个类名 */
+      /* 关键字 */
+      /* color: gray; */
+
+      /* RGB表示法 */
+      /* color: rgb(255, 120, 0); */
+
+      /* RGBA表示法 */
+      /* color: rgba(255, 120, 0, 0); */
+
+      /* 十六进制表示法 */
+      /* color: #0000ff; */
+      color: #b2b2b2;
+    }
+  </style>
+
+  <!-- 方式三: 使用外部的css文件 -->
+  <!-- <link rel="stylesheet" href="css/news.css"> -->
+</head>
+
+<body>
+  <!-- 定义一个标题 -->
+  <h1>【新思想引领新征程】推进长江十年禁渔 谱写长江大保护新篇章</h1>
+
+  <!-- 定义一个超链接 -->
+  <a href="https://www.cctv.com" target="_blank">央视网</a> 
+
+  <!-- 方式一: 行内样式 -->
+  <!-- <span style="color: gray;">2024年05月15日 20:07</span> -->
+
+  <span class="classname1">2024年05月15日 20:07</span>
+
+</body>
+</html>
+
+<!-- 
+span 和 div类似
+<span> = 行内容器（不换行）
+<div> = 块级容器（会换行，独占一行）
+
+<div>我是div，会独占一行</div>
+<span>我是span，</span><span>不会换行</span>
+
+总结：<span> 就是一个工具，让你能给一段文字加样式，而不影响其他内容。
+-->

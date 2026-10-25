@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue3-案例1</title>
+  <style>
+    table,th,td {
+      border: 1px solid #000;
+      border-collapse: collapse;
+      line-height: 50px;
+      text-align: center;
+    }
+
+    #center,table {
+      width: 60%;
+      margin: auto;
+    }
+
+    #center {
+      margin-bottom: 20px;
+    }
+
+    img {
+      width: 50px;
+    }
+
+    input,select {
+      width: 17%;
+      padding: 10px;
+      margin-right: 30px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .btn {
+      background-color: #ccc;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+
+    <div id="center">
+      姓名: <input type="text" name="name" v-model="name">
+
+      性别:
+      <select name="gender" v-model="gender">
+        <option value="1">男</option>
+        <option value="2">女</option>
+      </select>
+
+      职位:
+      <select name="job" v-model="job">
+        <option value="1">班主任</option>
+        <option value="2">讲师</option>
+        <option value="3">其他</option>
+      </select>
+
+      <input class="btn" type="button" value="查询" @click="search">
+    </div>
+    
+    <table>
+      <tr>
+        <th>序号</th>
+        <th>姓名</th>
+        <th>头像</th>
+        <th>性别</th>
+        <th>职位</th>
+        <th>入职时间</th>
+        <th>更新时间</th>
+      </tr>
+
+      <!-- v-for 用于列表循环渲染元素 -->
+      <tr v-for="(user, index) in userList" :key="user.id">
+        <td>{{index + 1}}</td>
+        <td>{{user.name}}</td>
+        <td> <img :src="user.image"> </td>
+        <td>
+          <span v-if="user.gender == 1">男</span>
+          <span v-else-if="user.gender == 2">女</span>
+          <span v-else>其他</span>
+        </td>
+        <td>
+          <span v-show="user.job == 1">班主任</span>
+          <span v-show="user.job == 2">讲师</span>
+          <span v-show="user.job != 1 && user.job != 2">其他</span>
+        </td>
+        <td>{{user.entrydate}}</td>
+        <td>{{user.updatetime}}</td>
+      </tr>
+    </table>
+    
+  </div>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script type="module">
+    import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+    createApp({
+      data() {
+        return {
+          name:'',
+          gender:'',
+          job:'',
+          userList: []
+        }
+      },
+      methods: {
+        search(){
+          //基于axios发送异步请求加载数据
+          axios.get(`https://web-server.itheima.net/emps/list?name=${this.name}&gender=${this.gender}&job=${this.job}`).then((result) => {
+            console.log(result);
+            this.userList = result.data.data;
+          })
+        }
+      },
+      //定义一个钩子函数 mounted
+      mounted() {
+        //页面加载完毕之后, 自动调用search
+        this.search();
+      }
+    }).mount("#app");
+  </script>
+</body>
+
+</html>

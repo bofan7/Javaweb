@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajax-Axios</title>
+</head>
+<body>
+    
+    <input type="button" value="获取数据GET" id="btnGet">
+    <input type="button" value="操作数据POST" id="btnPost">
+
+    <script src="js/axios.js"></script>
+    <script>
+        //发送GET请求
+        document.querySelector('#btnGet').addEventListener('click', () => {
+            //axios发起异步请求
+            axios({
+                url: 'https://mock.apifox.cn/m1/3083103-0-default/emps/list',
+                method: 'GET'
+            }).then((result) => { //成功回调函数
+                console.log(result.data);
+            }).catch((err) => { //失败回调函数
+                console.log(err);
+            })
+        })
+// 1. 当用户点击 ID 为 btnGet 的按钮时触发。
+// 2. 它向 .../emps/list 这个地址发送了一个 GET 请求。
+// 3. GET 的意思是“获取”。它对服务器说：“请把你的员工列表（/emps/list）数据给我一份。”
+// 4. 如果成功（.then），它会把服务器返回的数据（result.data）打印在控制台（Console）中。
+        
+
+
+
+        //发送POST请求
+// 1. 当用户点击 ID 为 btnPost 的按钮时触发。
+// 2. 它向 .../emps/update 这个地址发送了一个 POST 请求。
+// 3. POST 的意思是“提交”。它对服务器说：“我提交一些数据给你，请你处理一下（根据 URL 来看，是做‘更新’操作）。”
+        document.querySelector('#btnPost').addEventListener('click', () => {
+            //axios发起异步请求
+            axios({
+                url: 'https://mock.apifox.cn/m1/3083103-0-default/emps/update',
+                method: 'POST',
+                data: 'id=1' //POST请求方式 , 请求体
+            }).then((result) => { //成功回调函数
+                console.log(result.data);
+            }).catch((err) => { //失败回调函数
+                console.log(err);
+            })
+        })
+    </script>
+</body>
+</html>

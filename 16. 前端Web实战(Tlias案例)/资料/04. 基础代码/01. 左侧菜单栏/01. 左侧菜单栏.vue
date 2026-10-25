@@ -1,0 +1,49 @@
+<!-- 左侧菜单栏 -->
+<el-menu>
+  <!-- 首页菜单 -->
+  <el-menu-item index="/index">
+    <el-icon><Promotion /></el-icon> 首页
+  </el-menu-item>
+  
+  <!-- 班级管理菜单 -->
+  <el-sub-menu index="/manage">
+    <template #title>
+      <el-icon><Menu /></el-icon> 班级学员管理
+    </template>
+    <el-menu-item index="/clazz">
+      <el-icon><HomeFilled /></el-icon>班级管理
+    </el-menu-item>
+    <el-menu-item index="/stu">
+      <el-icon><UserFilled /></el-icon>学员管理
+    </el-menu-item>
+  </el-sub-menu>
+  
+  <!-- 系统信息管理 -->
+  <el-sub-menu index="/system">
+    <template #title>
+      <el-icon><Tools /></el-icon>系统信息管理
+    </template>
+    <el-menu-item index="/dept">
+      <el-icon><HelpFilled /></el-icon>部门管理
+    </el-menu-item>
+    <el-menu-item index="/emp">
+      <el-icon><Avatar /></el-icon>员工管理
+    </el-menu-item>
+  </el-sub-menu>
+
+  <!-- 数据统计管理 -->
+  <el-sub-menu index="/report">
+    <template #title>
+      <el-icon><Histogram /></el-icon>数据统计管理
+    </template>
+    <el-menu-item index="/empReport">
+      <el-icon><InfoFilled /></el-icon>员工信息统计
+    </el-menu-item>
+    <el-menu-item index="/stuReport">
+      <el-icon><Share /></el-icon>学员信息统计
+    </el-menu-item>
+    <el-menu-item index="/log">
+      <el-icon><Document /></el-icon>日志信息统计
+    </el-menu-item>
+  </el-sub-menu>
+</el-menu>

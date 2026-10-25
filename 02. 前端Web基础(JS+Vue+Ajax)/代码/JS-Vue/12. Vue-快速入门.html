@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue-快速入门</title>
+    <!--快速入门网站为cn.vuejs.org-->
+  </head>
+  <body>
+    <div id="app">
+      <!--这个div被vue接管-->
+
+      <!--插值表达式是一种在模板中嵌入动态数据的语法，
+      用两个花括号 {{ }} 包裹变量或表达式。可以 显示变量，执行简单运算，调用方法-->
+      <h1>{{message}}</h1>
+      <h1>{{count}}</h1>
+    </div>
+
+    <script type="module">
+      //引入vue模块
+      import { createApp } from "https://unpkg.com/vue@3/dist/vue.esm-browser.js";
+      createApp(
+        {//这对粉色大括号表示创建一个对象
+        data(){//data是函数的名字，Vue 框架内部会专门查找名为 data 的函数来获取数据
+          return{
+            message: 'Hello Vue', //message是个变量
+            count: 100 //count是个variable
+          }
+        }
+      }).mount('#app');//这个app是id名
+    </script>
+  </body>
+</html>
+
+<!--
+Vue 的配置对象中有很多固定的属性名，都不能随意更改:
+createApp({
+    // ✅ 这些名字都是固定的
+    data() {           // 数据
+        return { count: 0 }
+    },
+    
+    methods: {         // 方法
+        addCount() {
+            this.count++;
+        }
+    },
+    
+    computed: {        // 计算属性
+        函数名1() {
+            return this.count * 2;
+        }
+    },
+    
+    mounted() {        // 生命周期钩子
+        console.log('组件已挂载');
+    },
+    
+    watch: {          // 侦听器
+        count(newVal) {
+            console.log('count 变化了:', newVal);
+        }
+    }
+}).mount('#app');
+
+-->

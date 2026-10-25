@@ -1,0 +1,19 @@
+# --- Java/Maven 忽略项 ---
+target/
+*.class
+*.jar
+*.war
+
+# --- IDE (VS Code/IntelliJ) 忽略项 ---
+.vscode/
+.idea/
+*.iml
+*.log
+
+# --- 前端 (Node/Vue/React) 忽略项 ---
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store

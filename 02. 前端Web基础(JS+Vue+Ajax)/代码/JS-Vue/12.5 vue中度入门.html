@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 指令完整学习实例</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        #app {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+        .section-title {
+            color: #764ba2;
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        /* 👇 这是配合 v-cloak 防止页面闪烁的 */
+        [v-cloak] {
+            display: none;
+        }
+        
+        /* 👇 动态 class 的样式定义 */
+        .active {
+            color: #ff6b6b;
+            font-weight: bold;
+            transform: scale(1.1);
+            transition: all 0.3s;
+        }
+        .danger {
+            background: #ffe0e0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 2px solid #ff6b6b;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        input, textarea, select {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            margin: 5px 0;
+            width: 100%;
+            transition: border 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .fruit-list {
+            list-style: none;
+            padding: 0;
+        }
+        .fruit-item {
+            background: white;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 2px solid #667eea;
+            transition: all 0.3s;
+        }
+        .fruit-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .demo-box {
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        .output {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- v-cloak: 防止页面加载时显示 {{ }} 原始代码，像给页面戴个"隐身斗篷" -->
+    <div id="app" v-cloak>
+        <h1>🎯 Vue 指令游乐场 - 一次性搞懂所有指令</h1>
+        
+        <!-- ============================================ -->
+        <!-- 1️⃣ v-text 和 v-html: 显示文本的两兄弟 -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-title">📝 1. v-text 和 v-html（文本显示器）</div>
+            <div class="demo-box">
+                <!-- v-text: 老实人，只显示纯文字，HTML标签会被当成普通文字 -->
+                <p>v-text（纯文本）: <span v-text="plainText"></span></p>
+                
+                <!-- v-html: 会把 HTML 标签真的渲染出来，有样式！但要小心XSS攻击 -->
+                <p>v-html（带样式）: <span v-html="htmlText"></span></p>
+                
+                <p class="output">💡 记忆口诀：text=老实显示，html=带妆上场</p>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- 2️⃣ v-show 和 v-if: 显示隐藏的两种方式 -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-title">👁️ 2. v-show 和 v-if（隐身术 vs 瞬移术）</div>
+            <div class="demo-box">
+                <button @click="isVisible = !isVisible">🔄 切换显示</button>
+                
+                <!-- v-show: 像"隐身衣"，元素一直在 DOM 里，只是用 CSS 藏起来 display:none -->
+                <!-- 优点：切换快！适合频繁开关 -->
+                <p v-show="isVisible" style="color: #4caf50; margin-top: 10px;">
+                    ✅ v-show: 我穿着隐身衣，还在 DOM 里（查看源码能看到我）
+                </p>
+                
+                <!-- v-if: 像"瞬移"，条件为 false 时直接从 DOM 消失，为 true 时重新创建 -->
+                <!-- 优点：初始不渲染能提速！适合条件很少改变 -->
+                <p v-if="isVisible" style="color: #2196f3; margin-top: 10px;">
+                    ✅ v-if: 我能瞬移，false 时彻底消失（源码都看不到）
+                </p>
+                
+                <!-- v-else-if 和 v-else: 多条件判断，像 if-else 语句 -->
+                <div style="margin-top: 15px;">
+                    <input type="number" v-model.number="age" placeholder="输入年龄">
+                    <p v-if="age >= 18" style="color: green;">🎉 你是成年人</p>
+                    <p v-else-if="age >= 12" style="color: orange;">🎓 你是青少年</p>
+                    <p v-else-if="age > 0" style="color: blue;">👶 你是儿童</p>
+                    <p v-else style="color: gray;">❓ 请输入有效年龄</p>
+                </div>
+                
+                <p class="output">💡 口诀：频繁切换用 v-show（换衣服），条件稳定用 v-if（传送门）</p>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- 3️⃣ v-for: 循环渲染，批量生产工厂 -->
+        <!-- ============================================ -->
+         <!--
+  v-for 指令说明
+  
+  作用：列表渲染，遍历容器的元素或者对象的属性
+  
+  语法：
+  <tr v-for="(item, index) in items" :key="item.id">{{item}}</tr>
+  
+  参数说明：
+  • items  为遍历的数组
+  • item   为遍历出来的元素
+  • index  为索引/下标，从0开始；可以省略，省略index语法：v-for="item in items"
+  
+  key 属性：
+  • 作用：给元素添加的唯一标识，便于vue进行列表项的正确排序复用，提升渲染性能
+  • 推荐使用id作为key（唯一），不推荐使用index作为key（会变化，不对应）
+-->
+        <div class="section">
+            <div class="section-title">🔁 3. v-for（复印机 - 批量生产）</div>
+            <div class="demo-box">
+                <h4>🍎 遍历数组（像复印机，一份数据复印 N 份）</h4>
+                <ul class="fruit-list">
+                    <li v-for="(fruit, index) in fruits" :key="fruit.id" class="fruit-item">
+                        {{ index + 1 }}. {{ fruit.name }} - {{ fruit.price }}元/斤
+                    </li>
+                </ul>
+                
+                <h4 style="margin-top: 20px;">👤 遍历对象（把对象拆开看）</h4>
+                <div class="demo-box">
+                    <!-- (value, key) in 对象：value=属性值，key=属性名 -->
+                    <p v-for="(value, key) in user" :key="key">
+                        <strong>{{ key }}</strong>: {{ value }}
+                    </p>
+                </div>
+                
+                <p class="output">💡 口诀：v-for 是复印机，:key 是身份证（防止搞混）</p>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- 4️⃣ v-bind (缩写 :) : 属性绑定器 -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-title">🔗 4. v-bind（属性魔法棒 - 简写 :）</div>
+            <div class="demo-box">
+                <h4>🖼️ 绑定图片（图片地址来自 JS 变量）</h4>
+                <!-- :src="变量" 就是把 src 属性交给变量管，变量一改图片就换 -->
+                <img :src="imageUrl" :alt="imageAlt" style="width: 100px; height: 100px; border-radius: 10px;">
+                <button @click="changeImage">🔄 换图片</button>
+                
+                <h4 style="margin-top: 20px;">🎨 动态 class（开关式加样式）</h4>
+                <!-- { 类名: 布尔值 } 格式：true 就加这个类，false 就不加 -->
+                <p :class="{ active: isActive, danger: isDanger }">
+                    我的样式会根据数据变！
+                </p>
+                <button @click="isActive = !isActive">切换 Active</button>
+                <button @click="isDanger = !isDanger">切换 Danger</button>
+                
+                <h4 style="margin-top: 20px;">🎭 动态 style（直接绑定 CSS）</h4>
+                <!-- { CSS属性: 变量 } 格式：驼峰命名，如 fontSize -->
+                <p :style="{ color: textColor, fontSize: fontSize + 'px', fontWeight: 'bold' }">
+                    我的颜色是 {{ textColor }}，大小是 {{ fontSize }}px
+                </p>
+                <input type="color" v-model="textColor">
+                <input type="range" v-model="fontSize" min="12" max="40">
+                
+                <p class="output">💡 口诀：冒号(:) = 把 HTML 属性交给 JS 管</p>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- 5️⃣ v-on (缩写 @) : 事件监听器 -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-title">👆 5. v-on（事件捕手 - 简写 @）</div>
+            <div class="demo-box">
+                <h4>🖱️ 点击事件（用户一动手，你就行动）</h4>
+                <button @click="counter++">点击次数：{{ counter }}</button>
+                <button @click="resetCounter">重置</button>  <!--resetCounter是触发后，被执行的函数名-->
+                
+                <h4 style="margin-top: 20px;">💬 传参数（带着参数去执行）</h4>
+                <button @click="sayHello('小明')">对小明说话</button><!--sayHello是触发后，被执行的函数名-->
+                <button @click="sayHello('小红')">对小红说话</button>
+                <p style="color: green;">{{ greeting }}</p>
+                
+                <h4 style="margin-top: 20px;">⌨️ 键盘事件（回车触发）</h4>
+                <!-- @keyup.enter：只有按回车键才触发 -->
+                <input 
+                    type="text" 
+                    v-model="searchText" 
+                    @keyup.enter="search"
+                    placeholder="输入后按回车搜索">
+                <p v-if="searchResult" style="color: blue;">搜索结果：{{ searchResult }}</p>
+                
+                <h4 style="margin-top: 20px;">🚫 事件修饰符（阻止冒泡/默认行为）</h4>
+                <!-- .stop：阻止冒泡（点儿子不会触发爸爸）-->
+                <!-- .prevent：阻止默认行为（表单不刷新页面）-->
+                <!-- .once：只触发一次 -->
+                <button @click.once="showOnceMessage">只能点一次的按钮</button>
+                <p style="color: red;">{{ onceMessage }}</p>
+                
+                <p class="output">💡 口诀：@ = 监听动作，修饰符 = 加特效</p>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- 6️⃣ v-model: 双向绑定（最强大的魔法）-->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-title">🔄 6. v-model（双向同步魔法）</div>
+            <div class="demo-box">
+                <h4>✍️ 文本输入（你打字，变量同步；变量改，框里同步）</h4>
+                <input type="text" v-model="username" placeholder="输入用户名">
+                <p class="output">实时显示：{{ username }}</p>
+                
+                <h4 style="margin-top: 20px;">📝 多行文本</h4>
+                <textarea v-model="message" rows="3" placeholder="输入留言"></textarea>
+                <p class="output">你的留言：{{ message }}</p>
+                
+                <h4 style="margin-top: 20px;">☑️ 复选框（单个：true/false）</h4>
+                <label>
+                    <input type="checkbox" v-model="agreed">
+                    我同意用户协议
+                </label>
+                <p class="output">状态：{{ agreed ? '✅ 已同意' : '❌ 未同意' }}</p>
+                
+                <h4 style="margin-top: 20px;">📻 单选框（多选一）</h4>
+                <label><input type="radio" v-model="gender" value="男"> 男</label>
+                <label><input type="radio" v-model="gender" value="女"> 女</label>
+                <p class="output">你的性别：{{ gender }}</p>
+                
+                <h4 style="margin-top: 20px;">📋 下拉框</h4>
+                <select v-model="city">
+                    <option value="">请选择城市</option>
+                    <option value="北京">北京</option>
+                    <option value="上海">上海</option>
+                    <option value="广州">广州</option>
+                    <option value="深圳">深圳</option>
+                </select>
+                <p class="output">你选的城市：{{ city || '未选择' }}</p>
+                
+                <h4 style="margin-top: 20px;">🔧 修饰符（给 v-model 加特技）</h4>
+                <!-- .trim：自动去除首尾空格 -->
+                <input v-model.trim="trimmedText" placeholder=".trim 自动去空格">
+                <p>实际内容："{{ trimmedText }}"（长度：{{ trimmedText.length }}）</p>
+                
+                <!-- .number：自动转成数字类型 -->
+                <input v-model.number="age" type="number" placeholder=".number 转数字">
+                <p>年龄类型：{{ typeof age }}，值：{{ age }}</p>
+                
+                <!-- .lazy：失去焦点才更新（不是实时） -->
+                <input v-model.lazy="lazyText" placeholder=".lazy 失焦才更新">
+                <p>内容：{{ lazyText }}</p>
+                
+                <p class="output">💡 口诀：v-model = 表单和数据自动同步，改哪边都行</p>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- 7️⃣ 其他实用指令 -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-title">🛠️ 7. 其他实用指令</div>
+            <div class="demo-box">
+                <h4>🔒 v-once（只渲染一次，后续不更新）</h4>
+                <p v-once>静态内容：{{ staticText }}</p>
+                <p>动态内容：{{ staticText }}</p>
+                <button @click="staticText = '我变了！'">改变文本</button>
+                <p style="color: gray; font-size: 12px;">
+                    👆 第一行用了 v-once，点按钮它不会变
+                </p>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- 总结区 -->
+        <!-- ============================================ -->
+        <div class="section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+            <h2 style="color: white; text-align: center; margin-bottom: 20px;">🎓 一分钟速记表</h2>
+            <table style="width: 100%; border-collapse: collapse; background: white; color: #333; border-radius: 10px; overflow: hidden;">
+                <tr style="background: #667eea; color: white;">
+                    <th style="padding: 10px; border: 1px solid #ddd;">指令</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">形象比喻</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">一句话记忆</th>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>v-text</code></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">老实人</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">只显示纯文字，HTML标签当文字</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>v-html</code></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">化妆师</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">渲染HTML，带样式显示</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>v-show</code></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">隐身衣</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">CSS隐藏，元素还在DOM</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>v-if</code></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">瞬移术</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">条件渲染，false直接消失</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>v-for</code></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">复印机</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">循环渲染，别忘加:key</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>:属性</code></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">魔法棒</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">绑定属性，JS变量控制</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>@事件</code></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">捕手</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">监听动作，用户一动就执行</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><code>v-model</code></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">镜像魔法</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">双向绑定，表单和数据同步</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- 引入 Vue 3 -->
+    <script type="module">
+        import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+        
+        createApp({
+            data() {
+                return {
+                    // 1. v-text / v-html 数据
+                    plainText: 'Hello Vue 纯文本',
+                    htmlText: '<strong style="color: red;">我是加粗的红色文字</strong>',
+                    
+                    // 2. v-show / v-if 数据
+                    isVisible: true,
+                    age: 20,
+                    
+                    // 3. v-for 数据
+                    fruits: [
+                        { id: 1, name: '苹果', price: 8 },
+                        { id: 2, name: '香蕉', price: 6 },
+                        { id: 3, name: '橙子', price: 7 },
+                        { id: 4, name: '西瓜', price: 5 }
+                    ],
+                    user: {
+                        姓名: '张三',
+                        年龄: 25,
+                        城市: '北京',
+                        职业: '程序员'
+                    },
+                    
+                    // 4. v-bind 数据
+                    imageUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Vue',
+                    imageAlt: 'Vue Logo',
+                    isActive: false,
+                    isDanger: false,
+                    textColor: '#ff6b6b',
+                    fontSize: 20,
+                    
+                    // 5. v-on 数据
+                    counter: 0,
+                    greeting: '',
+                    searchText: '',
+                    searchResult: '',
+                    onceMessage: '',
+                    
+                    // 6. v-model 数据
+                    username: '',
+                    message: '',
+                    agreed: false,
+                    gender: '男',
+                    city: '',
+                    trimmedText: '',
+                    lazyText: '',
+                    
+                    // 7. v-once 数据
+                    staticText: '我是初始文本'
+                }
+            },
+            methods: {
+                // 切换图片
+                changeImage() {
+                    const seeds = ['Vue', 'React', 'Angular', 'Svelte', 'Ember'];
+                    const randomSeed = seeds[Math.floor(Math.random() * seeds.length)];
+                    this.imageUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${randomSeed}`;
+                },
+                
+                // 重置计数器
+                resetCounter() {
+                    this.counter = 0;
+                },
+                
+                // 打招呼（带参数）
+                sayHello(name) {
+                    this.greeting = `你好，${name}！欢迎学习 Vue 🎉`;
+                },
+                
+                // 搜索功能
+                search() {
+                    if (this.searchText.trim()) {
+                        this.searchResult = `搜索 "${this.searchText}" 的结果...`;
+                    }
+                },
+                
+                // 只触发一次的消息
+                showOnceMessage() {
+                    this.onceMessage = '✅ 我只会出现一次！再点也没用了';
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
